@@ -1,0 +1,15 @@
+<view class="page container">
+    <user-info></user-info>
+    <view class="row">
+        <view class="col-10">
+            <text>用户名</text>
+        </view>
+        <view class="col-14">
+            <input type="text"
+                placeholder="请输入用户名"
+                bindinput="bindUserNameChange"/>
+        </view>
+    </view>
+    <view class="br"></view>
+    <button type="default" size="defaultSize" loading="{{loading}}" hover-class="hover-class" bindtap="bindLogin">登录</button>
+</view>

@@ -1,0 +1,6 @@
+{
+    "usingComponents": {
+        "user-info": "./components/user-info/index"
+    },
+    "navigationBarTitleText": "登录"
+}

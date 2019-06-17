@@ -1,0 +1,8 @@
+<view class="page container">
+    <view wx:if="{{hasLogin}}">
+        <text>用户名：{{userName}}</text>
+    </view>
+    <view wx:else>
+        <button type="default" size="defaultSize" loading="{{loading}}" hover-class="hover-class" bindtap="bindLogin">去登录</button>
+    </view>
+</view>

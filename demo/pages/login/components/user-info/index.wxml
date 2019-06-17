@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<text wx:if="{{hasLogin}}">欢迎：{{userName}}</text>
+<text wx:else>请先登录！</text>
+

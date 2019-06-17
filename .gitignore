@@ -1,0 +1,16 @@
+.idea
+.DS_Store
+package-lock.json
+
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+miniprogram_dist
+miniprogram_dev
+node_modules
+coverage
+demo/node_modules/
+demo/miniprogram_npm/
