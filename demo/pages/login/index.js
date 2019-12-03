@@ -1,22 +1,16 @@
 import { connect } from '../../libs/minapp-redux'
-import * as Actions from '../../store/userInfo/actions.js'
+import { actions } from '../../store/index'
 
 const stateMap = state => {
-    const { userInfo } = state
+    const { user } = state
     return {
-        hasLogin: userInfo.hasLogin,
-        userName: userInfo.userName
+        userName: user.userInfo.userName
     }
 }
 
 const methodMap = (dispatch, state) => ({
     login(userName) {
-        dispatch(
-            Actions.login({
-                hasLogin: true,
-                userName
-            })
-        )
+        dispatch(actions.user.getUserInfo(userName))
     }
 })
 

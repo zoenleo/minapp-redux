@@ -1,7 +1,0 @@
-/**index.wxss**/
-.container {
-    padding-top: 400rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}

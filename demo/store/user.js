@@ -1,5 +1,4 @@
 import { createModule } from '../utils/reduxUtils'
-import { WeApi, CGI } from '../api/index'
 
 export default createModule({
     name: 'user',
@@ -7,16 +6,14 @@ export default createModule({
         userInfo: {}
     },
     actions: {
-        setPreCheck: v => v
+        setUserInfo: v => v
     },
     asyncActions: actions => ({
-        getPreCheck() {
+        getUserInfo(userName) {
             return function(dispatch, getState) {
-                return WeApi.request({
-                    cgi: CGI.preCheck
-                }).then(
+                return Promise.resolve({ userName, id: 1 }).then(
                     res => {
-                        dispatch(actions.setPreCheck(res.ret_data))
+                        dispatch(actions.setUserInfo(res))
                         return res
                     },
                     err => Promise.reject(err)
@@ -25,8 +22,8 @@ export default createModule({
         }
     }),
     reducers: {
-        setPreCheck(state, action) {
-            return { ...state, preCheck: action.payload }
+        setUserInfo(state, action) {
+            return { ...state, userInfo: action.payload }
         }
     }
 })

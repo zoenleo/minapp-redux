@@ -14,7 +14,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "2.2.5",
 	"appid": "wx103a5682096171b6",
-	"projectname": "minapp-redux",
+	"projectname": "demo",
 	"debugOptions": {
 		"hidedInDevtools": []
 	},

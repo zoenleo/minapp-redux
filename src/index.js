@@ -51,7 +51,6 @@ function shallowDiffData(data, stateMap) {
             newMap[key] = stateMap[key]
         }
     }
-    console.log('%c this is colored', hasDiff && newMap)
     return hasDiff && newMap
 }
 
@@ -83,24 +82,21 @@ function connect(mapStateToData, mapMethodToPage) {
                 `page object connect accept a page object, but got a ${typeof pageObject}`
             )
         }
+        // map state to data
         const dataMap = mapStateToData ? mapStateToData(_store.getState()) : {}
+        if (!pageObject.data) pageObject.data = {}
+        for (const dataKey in dataMap) {
+            if (pageObject.data.hasOwnProperty(dataKey)) {
+                Warn(
+                    `page object had data ${dataKey}, connect map will cover this prop.`
+                )
+            }
+            pageObject.data[dataKey] = dataMap[dataKey]
+        }
+        // map method to page
         const methodMap = mapMethodToPage
             ? mapMethodToPage(_store.dispatch, _store.getState())
             : {}
-        for (const dataKey in dataMap) {
-            if (pageObject.data) {
-                if (pageObject.data.hasOwnProperty(dataKey)) {
-                    Warn(
-                        `page object had data ${dataKey}, connect map will cover this prop.`
-                    )
-                }
-                pageObject.data[dataKey] = dataMap[dataKey]
-            } else {
-                pageObject.data = {
-                    [dataKey]: dataMap[dataKey]
-                }
-            }
-        }
         for (const methodKey in methodMap) {
             if (pageObject.hasOwnProperty(methodKey)) {
                 Warn(
@@ -152,52 +148,49 @@ function connectComponent(mapStateToData, mapMethodToPage) {
             `connect second param accept a function, but got a ${typeof mapMethodToPage}`
         )
     }
-    return function(pageObject) {
-        if (!isObject(pageObject)) {
+    return function(componentObject) {
+        if (!isObject(componentObject)) {
             Err(
-                `page object connect accept a page object, but got a ${typeof pageObject}`
+                `component object connect accept a component object, but got a ${typeof componentObject}`
             )
         }
+        // map state to data
         const dataMap = mapStateToData ? mapStateToData(_store.getState()) : {}
+        if (!componentObject.data) componentObject.data = {}
+        for (const dataKey in dataMap) {
+            if (componentObject.data.hasOwnProperty(dataKey)) {
+                Warn(
+                    `component object had data ${dataKey}, connect map will cover this prop.`
+                )
+            }
+            componentObject.data[dataKey] = dataMap[dataKey]
+        }
+        // map method to component
         const methodMap = mapMethodToPage
             ? mapMethodToPage(_store.dispatch, _store.getState())
             : {}
-        for (const dataKey in dataMap) {
-            if (pageObject.hasOwnProperty('data')) {
-                if (pageObject.data.hasOwnProperty(dataKey)) {
-                    Warn(
-                        `page object had data ${dataKey}, connect map will cover this prop.`
-                    )
-                }
-                pageObject.data[dataKey] = dataMap[dataKey]
-            } else {
-                pageObject.data = {
-                    [dataKey]: dataMap[dataKey]
-                }
-            }
-        }
         for (const methodKey in methodMap) {
             if (methodMap.hasOwnProperty('mothods')) {
-                if (pageObject.hasOwnProperty(methodKey)) {
+                if (componentObject.hasOwnProperty(methodKey)) {
                     Warn(
-                        `page object had method ${methodKey}, connect map will cover this method.`
+                        `component object had method ${methodKey}, connect map will cover this method.`
                     )
                 }
-                pageObject.mothods[methodKey] = methodMap[methodKey]
+                componentObject.mothods[methodKey] = methodMap[methodKey]
             } else {
-                pageObject.mothods = {
+                componentObject.mothods = {
                     [methodKey]: methodMap[methodKey]
                 }
             }
         }
         const attached =
-            (pageObject.hasOwnProperty('lifetimes') &&
-                pageObject.lifetimes.attached) ||
-            pageObject.attached
+            (componentObject.hasOwnProperty('lifetimes') &&
+                componentObject.lifetimes.attached) ||
+            componentObject.attached
         const detached =
-            (pageObject.hasOwnProperty('lifetimes') &&
-                pageObject.lifetimes.detached) ||
-            pageObject.detached
+            (componentObject.hasOwnProperty('lifetimes') &&
+                componentObject.lifetimes.detached) ||
+            componentObject.detached
         let unsubscribe = null
         const attachedCache = function() {
             const stateMap = shallowDiffData(
@@ -223,22 +216,22 @@ function connectComponent(mapStateToData, mapMethodToPage) {
          * 兼容2.2.3以下版本
          */
         if (
-            pageObject.hasOwnProperty('lifetimes') &&
-            pageObject.lifetimes.attached
+            componentObject.hasOwnProperty('lifetimes') &&
+            componentObject.lifetimes.attached
         ) {
-            pageObject.lifetimes.attached = attachedCache
+            componentObject.lifetimes.attached = attachedCache
         } else {
-            pageObject.attached = attachedCache
+            componentObject.attached = attachedCache
         }
         if (
-            pageObject.hasOwnProperty('lifetimes') &&
-            pageObject.lifetimes.detached
+            componentObject.hasOwnProperty('lifetimes') &&
+            componentObject.lifetimes.detached
         ) {
-            pageObject.lifetimes.detached = detachedCache
+            componentObject.lifetimes.detached = detachedCache
         } else {
-            pageObject.detached = detachedCache
+            componentObject.detached = detachedCache
         }
-        return pageObject
+        return componentObject
     }
 }
 

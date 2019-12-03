@@ -1,5 +1,5 @@
 <view class="page container">
-    <view wx:if="{{hasLogin}}">
+    <view wx:if="{{userName}}">
         <text>用户名：{{userName}}</text>
     </view>
     <view wx:else>

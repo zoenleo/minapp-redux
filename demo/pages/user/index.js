@@ -1,7 +1,13 @@
-const app = getApp()
 import { connect } from '../../libs/minapp-redux'
 
-const UserPages = {
+const stateMap = state => {
+    const { user } = state
+    return {
+        userName: user.userInfo.userName
+    }
+}
+
+const page = {
     onLoad() {
         console.warn('page load')
     },
@@ -16,12 +22,4 @@ const UserPages = {
     }
 }
 
-const ConnectPage = connect(state => {
-    const { userInfo } = state
-    return {
-        hasLogin: userInfo.hasLogin,
-        userName: userInfo.userName
-    }
-})(UserPages)
-
-Page(ConnectPage)
+Page(connect(stateMap)(page))

@@ -3,10 +3,9 @@
 import { connectComponent } from '../../../../libs/minapp-redux'
 
 const stateMap = state => {
-    const { userInfo } = state
+    const { user } = state
     return {
-        hasLogin: userInfo.hasLogin,
-        userName: userInfo.userName
+        userName: user.userInfo.userName
     }
 }
 
