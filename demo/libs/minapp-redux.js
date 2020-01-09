@@ -22,15 +22,15 @@ function isObject(obj) {
  * console warn
  * @param {String} str
  */
-function Warn(str) {
+function warn(str) {
     console.warn(str)
 }
 
 /**
- * throw Error
+ * throw error
  * @param {String} str
  */
-function Err(str) {
+function err(str) {
     throw new Error(str)
 }
 
@@ -67,18 +67,18 @@ let _store = null
  */
 function connect(mapStateToData, mapMethodToPage) {
     if (mapStateToData !== undefined && !isFunction(mapStateToData)) {
-        Err(
+        err(
             `connect first param accept a function, but got a ${typeof mapStateToData}`
         )
     }
     if (mapMethodToPage !== undefined && !isFunction(mapMethodToPage)) {
-        Err(
+        err(
             `connect second param accept a function, but got a ${typeof mapMethodToPage}`
         )
     }
     return function(pageObject) {
         if (!isObject(pageObject)) {
-            Err(
+            err(
                 `page object connect accept a page object, but got a ${typeof pageObject}`
             )
         }
@@ -87,7 +87,7 @@ function connect(mapStateToData, mapMethodToPage) {
         if (!pageObject.data) pageObject.data = {}
         for (const dataKey in dataMap) {
             if (pageObject.data.hasOwnProperty(dataKey)) {
-                Warn(
+                warn(
                     `page object had data ${dataKey}, connect map will cover this prop.`
                 )
             }
@@ -99,7 +99,7 @@ function connect(mapStateToData, mapMethodToPage) {
             : {}
         for (const methodKey in methodMap) {
             if (pageObject.hasOwnProperty(methodKey)) {
-                Warn(
+                warn(
                     `page object had method ${methodKey}, connect map will cover this method.`
                 )
             }
@@ -109,18 +109,15 @@ function connect(mapStateToData, mapMethodToPage) {
         const onUnload = pageObject.onUnload
         let unsubscribe = null
         pageObject.onLoad = function(options) {
-            const stateMap = shallowDiffData(
-                this.data,
-                mapStateToData(_store.getState())
-            )
-            stateMap && this.setData(stateMap)
-            unsubscribe = _store.subscribe(() => {
+            const updateData = () => {
                 const stateMap = shallowDiffData(
                     this.data,
                     mapStateToData(_store.getState())
                 )
                 stateMap && this.setData(stateMap)
-            })
+            }
+            updateData()
+            unsubscribe = _store.subscribe(updateData)
             onLoad && onLoad.call(this, options)
         }
         pageObject.onUnload = function() {
@@ -139,18 +136,18 @@ function connect(mapStateToData, mapMethodToPage) {
  */
 function connectComponent(mapStateToData, mapMethodToPage) {
     if (mapStateToData !== undefined && !isFunction(mapStateToData)) {
-        Err(
+        err(
             `connect first param accept a function, but got a ${typeof mapStateToData}`
         )
     }
     if (mapMethodToPage !== undefined && !isFunction(mapMethodToPage)) {
-        Err(
+        err(
             `connect second param accept a function, but got a ${typeof mapMethodToPage}`
         )
     }
     return function(componentObject) {
         if (!isObject(componentObject)) {
-            Err(
+            err(
                 `component object connect accept a component object, but got a ${typeof componentObject}`
             )
         }
@@ -159,7 +156,7 @@ function connectComponent(mapStateToData, mapMethodToPage) {
         if (!componentObject.data) componentObject.data = {}
         for (const dataKey in dataMap) {
             if (componentObject.data.hasOwnProperty(dataKey)) {
-                Warn(
+                warn(
                     `component object had data ${dataKey}, connect map will cover this prop.`
                 )
             }
@@ -169,19 +166,14 @@ function connectComponent(mapStateToData, mapMethodToPage) {
         const methodMap = mapMethodToPage
             ? mapMethodToPage(_store.dispatch, _store.getState())
             : {}
+        if (!componentObject.mothods) componentObject.mothods = {}
         for (const methodKey in methodMap) {
-            if (methodMap.hasOwnProperty('mothods')) {
-                if (componentObject.hasOwnProperty(methodKey)) {
-                    Warn(
-                        `component object had method ${methodKey}, connect map will cover this method.`
-                    )
-                }
-                componentObject.mothods[methodKey] = methodMap[methodKey]
-            } else {
-                componentObject.mothods = {
-                    [methodKey]: methodMap[methodKey]
-                }
+            if (componentObject.hasOwnProperty(methodKey)) {
+                warn(
+                    `component object had method ${methodKey}, connect map will cover this method.`
+                )
             }
+            componentObject.mothods[methodKey] = methodMap[methodKey]
         }
         const attached =
             (componentObject.hasOwnProperty('lifetimes') &&
@@ -193,18 +185,15 @@ function connectComponent(mapStateToData, mapMethodToPage) {
             componentObject.detached
         let unsubscribe = null
         const attachedCache = function() {
-            const stateMap = shallowDiffData(
-                this.data,
-                mapStateToData(_store.getState())
-            )
-            stateMap && this.setData(stateMap)
-            unsubscribe = _store.subscribe(() => {
+            const updateData = () => {
                 const stateMap = shallowDiffData(
                     this.data,
                     mapStateToData(_store.getState())
                 )
                 stateMap && this.setData(stateMap)
-            })
+            }
+            updateData()
+            unsubscribe = _store.subscribe(updateData)
             attached && attached.call(this)
         }
         const detachedCache = function() {
@@ -241,9 +230,9 @@ function connectComponent(mapStateToData, mapMethodToPage) {
  */
 function use(Store) {
     if (!isObject(Store))
-        Err(`init state accept a redux instance, but got a ${typeof Store}`)
+        err(`init state accept a redux instance, but got a ${typeof Store}`)
     if (_store) {
-        Warn(
+        warn(
             'there are multiple store active. This might lead to unexpected results.'
         )
     }
