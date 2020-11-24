@@ -166,14 +166,14 @@ function connectComponent(mapStateToData, mapMethodToPage) {
         const methodMap = mapMethodToPage
             ? mapMethodToPage(_store.dispatch, _store.getState())
             : {}
-        if (!componentObject.mothods) componentObject.mothods = {}
+        if (!componentObject.methods) componentObject.methods = {}
         for (const methodKey in methodMap) {
             if (componentObject.hasOwnProperty(methodKey)) {
                 warn(
                     `component object had method ${methodKey}, connect map will cover this method.`
                 )
             }
-            componentObject.mothods[methodKey] = methodMap[methodKey]
+            componentObject.methods[methodKey] = methodMap[methodKey]
         }
         const attached =
             (componentObject.hasOwnProperty('lifetimes') &&
