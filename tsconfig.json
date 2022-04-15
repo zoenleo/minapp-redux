@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        // 在表达式和声明上有隐含的 any类型时报错。
+        "noImplicitAny": true,
+        "module": "CommonJS",
+        "target": "ES5",
+        // 允许编译javascript文件。
+        "allowJs": false,
+        // 启用实验性的ES装饰器。
+        "experimentalDecorators": true,
+        // 当 this表达式的值为 any类型的时候，生成一个错误。
+        "noImplicitThis": true,
+        // 不是函数的所有返回路径都有返回值时报错。
+        "noImplicitReturns": true,
+        // 以严格模式解析并为每个源文件生成 "use strict"语句
+        "alwaysStrict": true,
+        // 生成单个sourcemaps文件，而不是将每sourcemaps生成不同的文件。
+        "inlineSourceMap": true,
+        // 将代码与sourcemaps生成到一个文件中，要求同时设置了 --inlineSourceMap或 --sourceMap属性。
+        "inlineSources": true,
+        // 报告switch语句的fallthrough错误。（即，不允许switch的case语句贯穿）
+        "noFallthroughCasesInSwitch": true,
+        // 若有未使用的局部变量则抛错。
+        "noUnusedLocals": true,
+        // 若有未使用的参数则抛错。
+        "noUnusedParameters": true,
+        // 启用所有严格类型检查选项。启用 strict 相当于启用 noImplicitAny, noImplicitThis, alwaysStrict， strictNullChecks和 strictFunctionTypes和strictPropertyInitialization。
+        "strict": true,
+        // 在严格的 null检查模式下， null和 undefined值不包含在任何类型里，只允许用它们自己和 any来赋值（有个例外， undefined可以赋值到 void）。
+        "strictNullChecks": true,
+        // 确保类的非undefined属性已经在构造函数里初始化。若要令此选项生效，需要同时启用--strictNullChecks。
+        "strictPropertyInitialization": true,
+        // 删除所有注释，除了以 /!*开头的版权信息。
+        "removeComments": true,
+        // 给错误和消息设置样式，使用颜色和上下文。
+        "pretty": true,
+        "resolveJsonModule": true,
+        "lib": ["es2015", "es5", "DOM"],
+        "typeRoots": ["./typings"],
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["./src/**/*.ts", "./typings/**/*.ts"],
+    "exclude": ["node_modules"]
+}
