@@ -383,5 +383,7 @@ function use(Store: Store) {
 module.exports = {
     connect,
     connectComponent,
+    createModule,
+    combineMudules,
     use
 }
