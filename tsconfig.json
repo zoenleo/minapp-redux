@@ -36,7 +36,7 @@
         // 给错误和消息设置样式，使用颜色和上下文。
         "pretty": true,
         "resolveJsonModule": true,
-        "lib": ["es2015", "es5", "DOM"],
+        "lib": ["es2017", "es5", "DOM"],
         "typeRoots": ["./typings"],
         "paths": {
             "@/*": ["./src/*"]
