@@ -1,4 +1,4 @@
-import { createModule } from '../utils/reduxUtils'
+import { createModule } from '../../libs/minapp-redux'
 
 export default createModule({
     name: 'user',

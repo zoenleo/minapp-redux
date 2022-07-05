@@ -41,9 +41,9 @@ function wxss(wxssFileList) {
 }
 
 /**
- * get js stream
+ * get ts stream
  */
-function js(jsFileMap, scope) {
+function ts(tsFileMap, scope) {
     const webpackConfig = config.webpack
     const webpackCallback = (err, stats) => {
         if (!err) {
@@ -67,7 +67,7 @@ function js(jsFileMap, scope) {
         }
     }
 
-    webpackConfig.entry = jsFileMap
+    webpackConfig.entry = tsFileMap
     webpackConfig.output.path = distPath
 
     if (scope.webpackWatcher) {
@@ -262,18 +262,18 @@ class BuildTask {
         /**
          * generate js to the dist folder
          */
-        gulp.task(`${id}-component-js`, done => {
-            const jsFileList = this.componentListMap.jsFileList
+        gulp.task(`${id}-component-ts`, done => {
+            const tsFileList = this.componentListMap.tsFileList
 
             if (
-                jsFileList &&
-                jsFileList.length &&
+                tsFileList &&
+                tsFileList.length &&
                 !_.compareArray(
-                    this.cachedComponentListMap.jsFileList,
-                    jsFileList
+                    this.cachedComponentListMap.tsFileList,
+                    tsFileList
                 )
             ) {
-                js(this.componentListMap.jsFileMap, this)
+                ts(this.componentListMap.tsFileMap, this)
             }
 
             return done()
@@ -321,7 +321,7 @@ class BuildTask {
                     gulp.parallel(
                         `${id}-component-wxml`,
                         `${id}-component-wxss`,
-                        `${id}-component-js`,
+                        `${id}-component-ts`,
                         `${id}-component-json`
                     )
                 )
@@ -403,7 +403,7 @@ class BuildTask {
                 gulp.parallel(
                     `${id}-component-wxml`,
                     `${id}-component-wxss`,
-                    `${id}-component-js`,
+                    `${id}-component-ts`,
                     `${id}-component-json`,
                     `${id}-copy`
                 )

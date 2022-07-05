@@ -28,7 +28,11 @@ redux 作为一个最好的 flux 最好的实现之一，他拥有庞大的社�
 
 -   完整的 Redux 支持
 
-前面说过`minapp-redux`只是作为一个 redux 的定制化插件存在，它没有改变任何的 redux 原有功能，任何你需要用到的无浏览器支持的 redux 插件你都可以无缝使用到把你的`minapp-redux`项目中，例如：redux-logger、redux-thunk 等等。你也可以基于自己对 redux 的理解实现自己的模块化管理 redux，例如我 github 项目中的 demo，使用 reduxUtils 模块化封装 redux。
+前面说过`minapp-redux`只是作为一个 redux 的定制化插件存在，它没有改变任何的 redux 原有功能，任何你需要用到的无浏览器支持的 redux 插件你都可以无缝使用到你的`minapp-redux`项目中，例如：redux-logger、redux-thunk 等等。
+
+-   模块化支持
+
+redux 本身没有提供模块化方法，minapp-redux 为了带来更好的使用体验，内置了 redux 的模块化封装，提供类似 vuex 开箱即用的模块化能力。
 
 ## 使用
 
@@ -45,7 +49,7 @@ redux 作为一个最好的 flux 最好的实现之一，他拥有庞大的社�
 #### API
 
 ```
-const { use, connect, connectComponent } = require(' minapp-redux')
+const { use, connect, connectComponent, createModule, combineModules } = require(' minapp-redux')
 
  /**
  * use
@@ -66,11 +70,42 @@ const { use, connect, connectComponent } = require(' minapp-redux')
  * @return {Function}
  */
 
+/**
+ * createModule
+ * 创建模块 模块对象必须为一个标准对象
+ * {
+    name: 'xxx',
+    initialState: {
+    },
+    asyncActions: actions => ({
+      xxx: (payload: any) {
+        return (dispatch, getState) => any
+      }
+    }),
+    reducers: {
+      xxx: (state, action) {
+        return { ...state, ...any}
+      }
+    }
+  }
+ * 返回一个redux模块
+ * @param {Object} module
+ * @returns {Object}
+ */
+
+/**
+ * combineModules
+ * 合并 modules，module 为使用 createModule 创建
+ * 合并后的 modules
+ * @param {Object} modules
+ * @returns {Object}
+ */
+
 ```
 
-#### use
+#### 如何使用？
 
-#### 注入 redux
+##### 注入 redux
 
 ```js
 // app.js
@@ -87,7 +122,7 @@ App({
 })
 ```
 
-#### page 连接
+##### page 连接
 
 ```js
 // pages/login/index.js
@@ -132,6 +167,65 @@ const page = {
 }
 
 Page(connect(stateMap, methodMap)(page))
+```
+
+##### 模块化方法
+
+```
+// store/modules/user.js
+import { createModule } from '../../libs/minapp-redux'
+
+export default createModule({
+    name: 'user',
+    initialState: {
+        userInfo: {}
+    },
+    actions: {
+        setUserInfo: v => v
+    },
+    asyncActions: actions => ({
+        getUserInfo(userName) {
+            return function(dispatch, getState) {
+                return Promise.resolve({ userName, id: 1 }).then(
+                    res => {
+                        dispatch(actions.setUserInfo(res))
+                        return res
+                    },
+                    err => Promise.reject(err)
+                )
+            }
+        }
+    }),
+    reducers: {
+        setUserInfo(state, action) {
+            return { ...state, userInfo: action.payload }
+        }
+    }
+})
+
+// store/index.js
+import { createStore, combineReducers, applyMiddleware } from '../libs/redux'
+import thunk from '../libs/redux-thunk.js'
+import logger from '../libs/redux-logger'
+import { combineModules } from '../libs/minapp-redux'
+
+import user from './user'
+
+let modules = combineModules({
+    user
+})
+
+let middleware = [thunk, logger]
+
+const Store = createStore(
+    combineReducers(modules.reducers),
+    applyMiddleware(...middleware)
+)
+
+export const actions = modules.actions
+
+export default Store
+
 ```
 
 更具体使用可查看[demo](https://github.com/zoenleo/minapp-redux/tree/master/demo)

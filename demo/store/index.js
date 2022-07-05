@@ -1,9 +1,9 @@
 import { createStore, combineReducers, applyMiddleware } from '../libs/redux'
 import thunk from '../libs/redux-thunk.js'
 import logger from '../libs/redux-logger'
+import { combineModules } from '../libs/minapp-redux'
 
-import { combineModules } from '../utils/reduxUtils'
-import user from './user'
+import user from './modules/user'
 
 let modules = combineModules({
     user

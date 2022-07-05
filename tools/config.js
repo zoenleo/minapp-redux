@@ -41,12 +41,17 @@ module.exports = {
                     test: /\.js$/i,
                     use: ['babel-loader', 'eslint-loader'],
                     exclude: /node_modules/
+                },
+                {
+                    test: /\.ts$/i,
+                    use: ['babel-loader', 'ts-loader', 'eslint-loader'],
+                    exclude: /node_modules/
                 }
             ]
         },
         resolve: {
             modules: [src, 'node_modules'],
-            extensions: ['.js', '.json']
+            extensions: ['.ts', '.js', '.json']
         },
         plugins: [
             new webpack.DefinePlugin({}),

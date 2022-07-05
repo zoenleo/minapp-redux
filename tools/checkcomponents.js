@@ -62,9 +62,9 @@ async function checkIncludedComponents(jsonPath, componentListMap) {
     componentListMap.wxmlFileList.push(`${fileBase}.wxml`)
     componentListMap.wxssFileList.push(`${fileBase}.wxss`)
     componentListMap.jsonFileList.push(`${fileBase}.json`)
-    componentListMap.jsFileList.push(`${fileBase}.js`)
+    componentListMap.tsFileList.push(`${fileBase}.ts`)
 
-    componentListMap.jsFileMap[fileBase] = `${path.join(dirPath, fileName)}.js`
+    componentListMap.tsFileMap[fileBase] = `${path.join(dirPath, fileName)}.ts`
 }
 
 module.exports = async function(entry) {
@@ -72,20 +72,20 @@ module.exports = async function(entry) {
         wxmlFileList: [],
         wxssFileList: [],
         jsonFileList: [],
-        jsFileList: [],
+        tsFileList: [],
 
-        jsFileMap: {} // for webpack entry
+        tsFileMap: {} // for webpack entry
     }
 
     const isExists = await _.checkFileExists(entry)
     if (!isExists) {
         const { dirPath, fileName, fileBase } = getJsonPathInfo(entry)
 
-        componentListMap.jsFileList.push(`${fileBase}.js`)
-        componentListMap.jsFileMap[fileBase] = `${path.join(
+        componentListMap.tsFileList.push(`${fileBase}.ts`)
+        componentListMap.tsFileMap[fileBase] = `${path.join(
             dirPath,
             fileName
-        )}.js`
+        )}.ts`
 
         return componentListMap
     }

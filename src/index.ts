@@ -79,7 +79,7 @@ let _store: Store
  * @param {Function} mapMethodToPage
  * @return {Function}
  */
-function connect(mapStateToData: any, mapMethodToPage: any) {
+export function connect(mapStateToData: any, mapMethodToPage: any) {
     if (mapStateToData !== undefined && !isFunction(mapStateToData)) {
         err(
             `connect first param accept a function, but got a ${typeof mapStateToData}`
@@ -148,7 +148,7 @@ function connect(mapStateToData: any, mapMethodToPage: any) {
  * @param {Function} mapMethodToPage
  * @return {Function}
  */
-function connectComponent(mapStateToData: any, mapMethodToPage: any) {
+export function connectComponent(mapStateToData: any, mapMethodToPage: any) {
     if (mapStateToData !== undefined && !isFunction(mapStateToData)) {
         err(
             `connect first param accept a function, but got a ${typeof mapStateToData}`
@@ -283,7 +283,7 @@ export const createModule = <
     const _actions: ActionCreatorMap<K> = {} as any
 
     const reducersNameSpaceMap: {
-        [key: string]: (state: S, action: Action<any>) => S
+        [key: string]: (state: S, action: Action<any, string>) => S
     } = {}
 
     for (const key in reducers) {
@@ -303,7 +303,7 @@ export const createModule = <
         }
     }
 
-    const reducer = (state: S = initialState, action: any) => {
+    const reducer = (state: S = initialState, action: Action<any, string>) => {
         return reducersNameSpaceMap[action.type]
             ? reducersNameSpaceMap[action.type](state, action)
             : state
@@ -344,14 +344,10 @@ export const combineModules = <
     modules: T
 ) => {
     // ActionsMapObject
-    const _actions: {
-        [key in keyof T]: T[key]['actions']
-    } = {} as any
+    const _actions: { [key in keyof T]: T[key]['actions'] } = {} as any
 
     // ReducersMapObject
-    const _reducers: {
-        [key in keyof T]: T[key]['reducer']
-    } = {} as any
+    const _reducers: { [key in keyof T]: T[key]['reducer'] } = {} as any
 
     for (const key in modules) {
         if (modules.hasOwnProperty(key)) {
@@ -362,14 +358,14 @@ export const combineModules = <
         }
     }
 
-    return { _actions, _reducers }
+    return { actions: _actions, reducers: _reducers }
 }
 
 /**
  * use Store
  * @param {Object} Store
  */
-function use(Store: Store) {
+export function use(Store: Store) {
     if (!isObject(Store))
         err(`init state accept a redux instance, but got a ${typeof Store}`)
     if (_store) {
