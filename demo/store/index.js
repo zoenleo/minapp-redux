@@ -2,10 +2,10 @@ import { createStore, combineReducers, applyMiddleware } from '../libs/redux'
 import thunk from '../libs/redux-thunk.js'
 import logger from '../libs/redux-logger'
 
-import { combineMudules } from '../utils/reduxUtils'
+import { combineModules } from '../utils/reduxUtils'
 import user from './user'
 
-let modules = combineMudules({
+let modules = combineModules({
     user
 })
 

@@ -12,7 +12,7 @@
     }
   }
  * 返回一个redux模块
- * @param {Object} mudule
+ * @param {Object} module
  * @returns {Object}
  */
 export const createModule = module => {
@@ -51,7 +51,7 @@ export const createModule = module => {
  * @param {Object} modules
  * @returns {Object}
  */
-export const combineMudules = modules => {
+export const combineModules = modules => {
     let _actions = {}
     let _reducers = {}
     for (let key in modules) {

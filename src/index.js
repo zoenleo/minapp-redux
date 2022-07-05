@@ -37,7 +37,7 @@ function err(str) {
 /**
  * 浅比较当前date和新的stateMap，并返回更小粒度的更新
  * @param {String} data
- * @param {String} stateMap
+ * @param {Object} stateMap
  * @return {Object | false}
  */
 

@@ -266,7 +266,7 @@ function connectComponent(mapStateToData: any, mapMethodToPage: any) {
     }
   }
  * 返回一个redux模块
- * @param {Object} mudule
+ * @param {Object} module
  * @returns {Object}
  */
 export const createModule = <
@@ -338,7 +338,7 @@ export const createModule = <
  * @param {Object} modules
  * @returns {Object}
  */
-export const combineMudules = <
+export const combineModules = <
     T extends Record<string, ModuleOutPut<string, any, any, any>>
 >(
     modules: T
@@ -384,6 +384,6 @@ module.exports = {
     connect,
     connectComponent,
     createModule,
-    combineMudules,
+    combineModules,
     use
 }
