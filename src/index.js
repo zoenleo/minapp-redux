@@ -1,14 +1,3 @@
-import { Store, Unsubscribe } from 'redux'
-import {
-    Action,
-    ActionCreatorMap,
-    AsyncActionCreatorMap,
-    ModuleOutPut,
-    ModuleOptions,
-    PageObject,
-    ComponentObject
-} from '../typings/index'
-
 const _toString = Object.prototype.toString
 
 /**
@@ -16,7 +5,7 @@ const _toString = Object.prototype.toString
  * @param {*} obj
  * @return {Boolean}
  */
-function isFunction(obj: any) {
+function isFunction(obj) {
     return typeof obj === 'function' || false
 }
 
@@ -25,7 +14,7 @@ function isFunction(obj: any) {
  * @param {*} obj
  * @return {Boolean}
  */
-function isObject(obj: any) {
+function isObject(obj) {
     return _toString.call(obj) === '[object Object]' || false
 }
 
@@ -33,7 +22,7 @@ function isObject(obj: any) {
  * console warn
  * @param {String} str
  */
-function warn(str: string) {
+function warn(str) {
     console.warn(str)
 }
 
@@ -41,7 +30,7 @@ function warn(str: string) {
  * throw error
  * @param {String} str
  */
-function err(str: string) {
+function err(str) {
     throw new Error(str)
 }
 
@@ -52,12 +41,9 @@ function err(str: string) {
  * @return {Object | false}
  */
 
-function shallowDiffData(
-    data: Record<string, any>,
-    stateMap: Record<string, any>
-) {
+function shallowDiffData(data, stateMap) {
     if (!isObject(stateMap)) return false
-    let newMap: Record<string, any> = {}
+    let newMap = {}
     let hasDiff = false
     for (let key in stateMap) {
         if (stateMap[key] !== data[key]) {
@@ -71,7 +57,7 @@ function shallowDiffData(
 /**
  * redux store实例
  */
-let _store: Store
+let _store
 
 /**
  * 连接器
@@ -79,7 +65,7 @@ let _store: Store
  * @param {Function} mapMethodToPage
  * @return {Function}
  */
-export function connect(mapStateToData: any, mapMethodToPage: any) {
+export function connect(mapStateToData, mapMethodToPage) {
     if (mapStateToData !== undefined && !isFunction(mapStateToData)) {
         err(
             `connect first param accept a function, but got a ${typeof mapStateToData}`
@@ -90,7 +76,7 @@ export function connect(mapStateToData: any, mapMethodToPage: any) {
             `connect second param accept a function, but got a ${typeof mapMethodToPage}`
         )
     }
-    return function(pageObject: PageObject) {
+    return function(pageObject) {
         if (!isObject(pageObject)) {
             err(
                 `page object connect accept a page object, but got a ${typeof pageObject}`
@@ -121,7 +107,7 @@ export function connect(mapStateToData: any, mapMethodToPage: any) {
         }
         const onLoad = pageObject.onLoad
         const onUnload = pageObject.onUnload
-        let unsubscribe: Unsubscribe
+        let unsubscribe
         pageObject.onLoad = function(options) {
             const updateData = () => {
                 const stateMap = shallowDiffData(
@@ -148,7 +134,7 @@ export function connect(mapStateToData: any, mapMethodToPage: any) {
  * @param {Function} mapMethodToPage
  * @return {Function}
  */
-export function connectComponent(mapStateToData: any, mapMethodToPage: any) {
+export function connectComponent(mapStateToData, mapMethodToPage) {
     if (mapStateToData !== undefined && !isFunction(mapStateToData)) {
         err(
             `connect first param accept a function, but got a ${typeof mapStateToData}`
@@ -159,7 +145,7 @@ export function connectComponent(mapStateToData: any, mapMethodToPage: any) {
             `connect second param accept a function, but got a ${typeof mapMethodToPage}`
         )
     }
-    return function(componentObject: ComponentObject) {
+    return function(componentObject) {
         if (!isObject(componentObject)) {
             err(
                 `component object connect accept a component object, but got a ${typeof componentObject}`
@@ -198,15 +184,9 @@ export function connectComponent(mapStateToData: any, mapMethodToPage: any) {
             (componentObject.lifetimes && componentObject.lifetimes.detached) ||
             componentObject.detached
 
-        let unsubscribe: Unsubscribe
+        let unsubscribe
 
-        const attachedCache = function(
-            this: WechatMiniprogram.Component.Instance<
-                WechatMiniprogram.Component.DataOption,
-                WechatMiniprogram.Component.PropertyOption,
-                WechatMiniprogram.Component.MethodOption
-            >
-        ) {
+        const attachedCache = function() {
             const updateData = () => {
                 const stateMap = shallowDiffData(
                     this.data || {},
@@ -219,13 +199,7 @@ export function connectComponent(mapStateToData: any, mapMethodToPage: any) {
             attached && attached.call(this)
         }
 
-        const detachedCache = function(
-            this: WechatMiniprogram.Component.Instance<
-                WechatMiniprogram.Component.DataOption,
-                WechatMiniprogram.Component.PropertyOption,
-                WechatMiniprogram.Component.MethodOption
-            >
-        ) {
+        const detachedCache = function() {
             unsubscribe && unsubscribe()
             detached && detached.call(this)
         }
@@ -269,22 +243,13 @@ export function connectComponent(mapStateToData: any, mapMethodToPage: any) {
  * @param {Object} options
  * @returns {Object}
  */
-export const createModule = <
-    N extends string,
-    S extends Record<string, any>,
-    K extends Record<string, any>,
-    T extends Record<string, any>
->(
-    options: ModuleOptions<N, S, K, T>
-): ModuleOutPut<N, S, K, T> => {
+export const createModule = options => {
     const { name, initialState, reducers, asyncActions } = options
 
-    let actions: ActionCreatorMap<K> | AsyncActionCreatorMap<T> = {} as any
-    const _actions: ActionCreatorMap<K> = {} as any
+    let actions = {}
+    const _actions = {}
 
-    const reducersNameSpaceMap: {
-        [key: string]: (state: S, action: Action<any, string>) => S
-    } = {}
+    const reducersNameSpaceMap = {}
 
     for (const key in reducers) {
         if (reducers.hasOwnProperty(key)) {
@@ -292,7 +257,7 @@ export const createModule = <
             // 根据reducer动态关联生成action
             const namespace = `${name}_${key}`
 
-            _actions[key] = (payload: K[typeof key]) => {
+            _actions[key] = payload => {
                 return {
                     type: namespace,
                     payload
@@ -303,7 +268,7 @@ export const createModule = <
         }
     }
 
-    const reducer = (state: S = initialState, action: Action<any, string>) => {
+    const reducer = (state = initialState, action) => {
         return reducersNameSpaceMap[action.type]
             ? reducersNameSpaceMap[action.type](state, action)
             : state
@@ -338,16 +303,12 @@ export const createModule = <
  * @param {Object} modules
  * @returns {Object}
  */
-export const combineModules = <
-    T extends Record<string, ModuleOutPut<string, any, any, any>>
->(
-    modules: T
-) => {
+export const combineModules = modules => {
     // ActionsMapObject
-    const _actions: { [key in keyof T]: T[key]['actions'] } = {} as any
+    const _actions = {}
 
     // ReducersMapObject
-    const _reducers: { [key in keyof T]: T[key]['reducer'] } = {} as any
+    const _reducers = {}
 
     for (const key in modules) {
         if (modules.hasOwnProperty(key)) {
@@ -365,7 +326,7 @@ export const combineModules = <
  * use Store
  * @param {Object} Store
  */
-export function use(Store: Store) {
+export function use(Store) {
     if (!isObject(Store))
         err(`init state accept a redux instance, but got a ${typeof Store}`)
     if (_store) {
