@@ -48,7 +48,7 @@ redux 本身没有提供模块化方法，minapp-redux 为了带来更好的使�
 
 #### API
 
-```
+```js
 const { use, connect, connectComponent, createModule, combineModules } = require(' minapp-redux')
 
  /**
@@ -171,7 +171,7 @@ Page(connect(stateMap, methodMap)(page))
 
 ##### 模块化方法
 
-```
+```js
 // store/modules/user.js
 import { createModule } from '../../libs/minapp-redux'
 
